@@ -1,18 +1,20 @@
-﻿import { Component, ChangeEvent } from "react";
+﻿import {Component, ChangeEvent} from "react";
 import DeliveryDataService from "../services/delivery.service";
-import { Link } from "react-router-dom";
-import IPackageData from '../types/delivery.type';
+import {Link} from "react-router-dom";
+import {IPackageList, IPackageData} from '../types/delivery.type';
 
 type Props = {};
 
 type State = {
-    tutorials: Array<IPackageData>,
+    error: Error | null,
+    isLoaded: boolean,
+    tutorials: IPackageList,
     currentTutorial: IPackageData | null,
     currentIndex: number,
     searchTitle: string
 };
 
-export default class TutorialsList extends Component<Props, State>{
+export default class TutorialsList extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
@@ -23,7 +25,9 @@ export default class TutorialsList extends Component<Props, State>{
         // this.searchTitle = this.searchTitle.bind(this);
 
         this.state = {
-            tutorials: [],
+            error: null,
+            isLoaded: false,
+            tutorials: {packages: []},
             currentTutorial: null,
             currentIndex: -1,
             searchTitle: ""
@@ -46,11 +50,16 @@ export default class TutorialsList extends Component<Props, State>{
         DeliveryDataService.getAll()
             .then((response: any) => {
                 this.setState({
+                    isLoaded: true,
                     tutorials: response.data
                 });
                 console.log(response.data);
             })
             .catch((e: Error) => {
+                this.setState({
+                    isLoaded: true,
+                    error: e
+                });
                 console.log(e);
             });
     }
@@ -100,97 +109,102 @@ export default class TutorialsList extends Component<Props, State>{
     // }
 
     render() {
-        const { searchTitle, tutorials, currentTutorial, currentIndex } = this.state;
+        const {error, isLoaded, searchTitle, tutorials, currentTutorial, currentIndex} = this.state;
+        if (error) {
+            return <div>Ошибка: {error.message}</div>;
+        } else if (!isLoaded) {
+            return <div>Loading...</div>;
+        } else {
+            return (
+                <div className="list row">
+                    <li>
+                        {tutorials.packages.length}
+                    </li>
+                    {/*<div className="col-md-8">*/}
+                    {/*    <div className="input-group mb-3">*/}
+                    {/*        <input*/}
+                    {/*            type="text"*/}
+                    {/*            className="form-control"*/}
+                    {/*            placeholder="Search by title"*/}
+                    {/*            value={searchTitle}*/}
+                    {/*            onChange={this.onChangeSearchTitle}*/}
+                    {/*        />*/}
+                    {/*        <div className="input-group-append">*/}
+                    {/*            <button*/}
+                    {/*                className="btn btn-outline-secondary"*/}
+                    {/*                type="button"*/}
+                    {/*                onClick={this.searchTitle}*/}
+                    {/*            >*/}
+                    {/*                Search*/}
+                    {/*            </button>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
+                    <div className="col-md-6">
+                        <h4>Tutorials List</h4>
 
-        return (
-            <div className="list row">
-                <li>
-                    {tutorials.length}
-                </li>
-                {/*<div className="col-md-8">*/}
-                {/*    <div className="input-group mb-3">*/}
-                {/*        <input*/}
-                {/*            type="text"*/}
-                {/*            className="form-control"*/}
-                {/*            placeholder="Search by title"*/}
-                {/*            value={searchTitle}*/}
-                {/*            onChange={this.onChangeSearchTitle}*/}
-                {/*        />*/}
-                {/*        <div className="input-group-append">*/}
-                {/*            <button*/}
-                {/*                className="btn btn-outline-secondary"*/}
-                {/*                type="button"*/}
-                {/*                onClick={this.searchTitle}*/}
-                {/*            >*/}
-                {/*                Search*/}
-                {/*            </button>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-                <div className="col-md-6">
-                    <h4>Tutorials List</h4>
+                        <ul className="list-group">
+                            {tutorials &&
+                                tutorials.packages.map((tutorial: IPackageData, index: number) => (
+                                    <li
+                                        className={
+                                            "list-group-item " +
+                                            (index === currentIndex ? "active" : "")
+                                        }
+                                        onClick={() => this.setActiveTutorial(tutorial, index)}
+                                        key={index}
+                                    >
+                                        {tutorial.title}
+                                    </li>
+                                ))}
+                        </ul>
 
-                    <ul className="list-group">
-                        {tutorials &&
-                            tutorials.map((tutorial: IPackageData, index: number) => (
-                                <li
-                                    className={
-                                        "list-group-item " +
-                                        (index === currentIndex ? "active" : "")
-                                    }
-                                    onClick={() => this.setActiveTutorial(tutorial, index)}
-                                    key={index}
+                        <button
+                            className="m-3 btn btn-sm btn-danger"
+                            // onClick={this.removeAllTutorials}
+                        >
+                            Remove All
+                        </button>
+                    </div>
+                    <div className="col-md-6">
+                        {currentTutorial ? (
+                            <div>
+                                <h4>Tutorial</h4>
+                                <div>
+                                    <label>
+                                        <strong>Title:</strong>
+                                    </label>{" "}
+                                    {currentTutorial.title}
+                                </div>
+                                <div>
+                                    <label>
+                                        <strong>Description:</strong>
+                                    </label>{" "}
+                                    {/*{currentTutorial.description}*/}
+                                </div>
+                                <div>
+                                    <label>
+                                        <strong>Status:</strong>
+                                    </label>{" "}
+                                    {/*{currentTutorial.published ? "Published" : "Pending"}*/}
+                                </div>
+
+                                <Link
+                                    to={"/tutorials/" + currentTutorial.id}
+                                    className="badge badge-warning"
                                 >
-                                    {tutorial.title}
-                                </li>
-                            ))}
-                    </ul>
-
-                    <button
-                        className="m-3 btn btn-sm btn-danger"
-                        // onClick={this.removeAllTutorials}
-                    >
-                        Remove All
-                    </button>
+                                    Edit
+                                </Link>
+                            </div>
+                        ) : (
+                            <div>
+                                <br/>
+                                <p>Please click on a Tutorial...</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
-                <div className="col-md-6">
-                    {currentTutorial ? (
-                        <div>
-                            <h4>Tutorial</h4>
-                            <div>
-                                <label>
-                                    <strong>Title:</strong>
-                                </label>{" "}
-                                {currentTutorial.title}
-                            </div>
-                            <div>
-                                <label>
-                                    <strong>Description:</strong>
-                                </label>{" "}
-                                {/*{currentTutorial.description}*/}
-                            </div>
-                            <div>
-                                <label>
-                                    <strong>Status:</strong>
-                                </label>{" "}
-                                {/*{currentTutorial.published ? "Published" : "Pending"}*/}
-                            </div>
-
-                            <Link
-                                to={"/tutorials/" + currentTutorial.id}
-                                className="badge badge-warning"
-                            >
-                                Edit
-                            </Link>
-                        </div>
-                    ) : (
-                        <div>
-                            <br />
-                            <p>Please click on a Tutorial...</p>
-                        </div>
-                    )}
-                </div>
-            </div>
-        );
+            );
+        }
     }
 }

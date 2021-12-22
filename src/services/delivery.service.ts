@@ -1,9 +1,9 @@
 ﻿import http from "../http-common";
-import IPackageData from "../types/delivery.type"
+import {IPackageList} from '../types/delivery.type';
 
 class PackageDataService {
     getAll() {
-        return http.get<Array<IPackageData>>("/package");
+        return http.get<IPackageList>("/package");
     }
 
     // get(id: string) {
