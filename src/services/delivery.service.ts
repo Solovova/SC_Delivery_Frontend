@@ -1,14 +1,15 @@
 ﻿import http from "../http-common";
-import {IPackageList} from '../types/delivery.type';
+import {IPackageListVm} from '../types/delivery.type';
+import {IPackageDetailsDto} from '../types/delivery.type';
 
 class PackageDataService {
     getAll() {
-        return http.get<IPackageList>("/package");
+        return http.get<IPackageListVm>("/package");
     }
 
-    // get(id: string) {
-    //     return http.get<ITutorialData>(`/tutorials/${id}`);
-    // }
+    get(id: string) {
+        return http.get<IPackageDetailsDto>(`/tutorials/${id}`);
+    }
     //
     // create(data: ITutorialData) {
     //     return http.post<ITutorialData>("/tutorials", data);

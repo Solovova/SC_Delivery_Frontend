@@ -11,13 +11,13 @@ function App() {
     return (
         <div>
             <nav className="navbar navbar-expand navbar-dark bg-dark">
-                <Link to={"/tutorials"} className="navbar-brand">
-                    bezKoder
+                <Link to={"/packages"} className="navbar-brand">
+                    Delivery
                 </Link>
                 <div className="navbar-nav mr-auto">
                     <li className="nav-item">
-                        <Link to={"/tutorials"} className="nav-link">
-                            Tutorials
+                        <Link to={"/packages"} className="nav-link">
+                            Packages
                         </Link>
                     </li>
                     <li className="nav-item">
@@ -30,9 +30,9 @@ function App() {
 
             <div className="container mt-3">
                 <Routes>
-                    <Route path="/tutorials" element={<PackageList/>} />
+                    <Route path="/packages" element={<PackageList/>} />
                     <Route path="/add" element={<PackageAdd/>} />
-                    {/*<Route path="/tutorials/:id" component={Tutorial} />*/}
+                    <Route path="/update/:id" element={<PackageUpdate/>} />
                 </Routes>
             </div>
         </div>

@@ -1,15 +1,15 @@
 ﻿import {Component, ChangeEvent} from "react";
 import DeliveryDataService from "../services/delivery.service";
 import {Link} from "react-router-dom";
-import {IPackageList, IPackageData} from '../types/delivery.type';
+import {IPackageListVm, IPackageListRecordDto} from '../types/delivery.type';
 
 type Props = {};
 
 type State = {
     error: Error | null,
     isLoaded: boolean,
-    tutorials: IPackageList,
-    currentTutorial: IPackageData | null,
+    packages: IPackageListVm,
+    currentPackage: IPackageListRecordDto | null,
     currentIndex: number,
     searchTitle: string
 };
@@ -27,8 +27,8 @@ export default class TutorialsList extends Component<Props, State> {
         this.state = {
             error: null,
             isLoaded: false,
-            tutorials: {packages: []},
-            currentTutorial: null,
+            packages: {packages: []},
+            currentPackage: null,
             currentIndex: -1,
             searchTitle: ""
         };
@@ -51,7 +51,7 @@ export default class TutorialsList extends Component<Props, State> {
             .then((response: any) => {
                 this.setState({
                     isLoaded: true,
-                    tutorials: response.data
+                    packages: response.data
                 });
                 console.log(response.data);
             })
@@ -67,14 +67,14 @@ export default class TutorialsList extends Component<Props, State> {
     refreshList() {
         this.retrieveTutorials();
         this.setState({
-            currentTutorial: null,
+            currentPackage: null,
             currentIndex: -1
         });
     }
 
-    setActiveTutorial(tutorial: IPackageData, index: number) {
+    setActiveTutorial(tutorial: IPackageListRecordDto, index: number) {
         this.setState({
-            currentTutorial: tutorial,
+            currentPackage: tutorial,
             currentIndex: index
         });
     }
@@ -109,7 +109,7 @@ export default class TutorialsList extends Component<Props, State> {
     // }
 
     render() {
-        const {error, isLoaded, searchTitle, tutorials, currentTutorial, currentIndex} = this.state;
+        const {error, isLoaded, searchTitle, packages, currentPackage, currentIndex} = this.state;
         if (error) {
             return <div>Ошибка: {error.message}</div>;
         } else if (!isLoaded) {
@@ -117,64 +117,61 @@ export default class TutorialsList extends Component<Props, State> {
         } else {
             return (
                 <div className="list row">
-                    <li>
-                        {tutorials.packages.length}
-                    </li>
-                    {/*<div className="col-md-8">*/}
-                    {/*    <div className="input-group mb-3">*/}
-                    {/*        <input*/}
-                    {/*            type="text"*/}
-                    {/*            className="form-control"*/}
-                    {/*            placeholder="Search by title"*/}
-                    {/*            value={searchTitle}*/}
-                    {/*            onChange={this.onChangeSearchTitle}*/}
-                    {/*        />*/}
-                    {/*        <div className="input-group-append">*/}
-                    {/*            <button*/}
-                    {/*                className="btn btn-outline-secondary"*/}
-                    {/*                type="button"*/}
-                    {/*                onClick={this.searchTitle}*/}
-                    {/*            >*/}
-                    {/*                Search*/}
-                    {/*            </button>*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
+                    <div className="col-md-8">
+                        <div className="input-group mb-3">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Search by title"
+                                value={searchTitle}
+                                // onChange={this.onChangeSearchTitle}
+                            />
+                            <div className="input-group-append">
+                                <button
+                                    className="btn btn-outline-secondary"
+                                    type="button"
+                                    // onClick={this.searchTitle}
+                                >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <div className="col-md-6">
-                        <h4>Tutorials List</h4>
-
-                        <ul className="list-group">
-                            {tutorials &&
-                                tutorials.packages.map((tutorial: IPackageData, index: number) => (
-                                    <li
-                                        className={
-                                            "list-group-item " +
-                                            (index === currentIndex ? "active" : "")
-                                        }
-                                        onClick={() => this.setActiveTutorial(tutorial, index)}
-                                        key={index}
-                                    >
-                                        {tutorial.title}
-                                    </li>
-                                ))}
-                        </ul>
-
+                        <h4>Packages List</h4>
                         <button
                             className="m-3 btn btn-sm btn-danger"
                             // onClick={this.removeAllTutorials}
                         >
                             Remove All
                         </button>
+                        <ul className="list-group">
+                            {packages &&
+                                packages.packages.map((packageData: IPackageListRecordDto, index: number) => (
+                                    <li
+                                        className={
+                                            "list-group-item " +
+                                            (index === currentIndex ? "active" : "")
+                                        }
+                                        onClick={() => this.setActiveTutorial(packageData, index)}
+                                        key={index}
+                                    >
+                                        {packageData.title}
+                                    </li>
+                                ))}
+                        </ul>
+
+                        
                     </div>
                     <div className="col-md-6">
-                        {currentTutorial ? (
+                        {currentPackage ? (
                             <div>
-                                <h4>Tutorial</h4>
+                                <h4>Package</h4>
                                 <div>
                                     <label>
                                         <strong>Title:</strong>
                                     </label>{" "}
-                                    {currentTutorial.title}
+                                    {currentPackage.title}
                                 </div>
                                 <div>
                                     <label>
@@ -188,9 +185,8 @@ export default class TutorialsList extends Component<Props, State> {
                                     </label>{" "}
                                     {/*{currentTutorial.published ? "Published" : "Pending"}*/}
                                 </div>
-
                                 <Link
-                                    to={"/tutorials/" + currentTutorial.id}
+                                    to={"/update/" + currentPackage.id}
                                     className="badge badge-warning"
                                 >
                                     Edit
@@ -199,7 +195,7 @@ export default class TutorialsList extends Component<Props, State> {
                         ) : (
                             <div>
                                 <br/>
-                                <p>Please click on a Tutorial...</p>
+                                <p>Please click on a Package...</p>
                             </div>
                         )}
                     </div>
