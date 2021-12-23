@@ -1,9 +1,8 @@
-﻿import {Component, ChangeEvent} from "react";
+﻿import React, {Component} from "react";
 import DeliveryDataService from "../services/delivery.service";
-import {Link} from "react-router-dom";
-import {IPackageDetailsDto, IGetPackageDetailsQuery, IPackageListRecordDto} from '../types/delivery.type';
+import {IPackageDetailsDto} from '../types/delivery.type';
+import {useParams} from "react-router";
 
-type Props = {};
 
 type State = {
     error: Error | null,
@@ -11,16 +10,33 @@ type State = {
     packageDetailsDto: IPackageDetailsDto | null,
 };
 
-export default class PackageUpdate extends Component<Props, State> {
+type Props = {
+    Id: string | undefined;
+};
 
+type PropsWrapper = {
+};
+
+type Params = {
+    id: string;
+};
+
+const WrapperPackageUpdate: React.FC<PropsWrapper> = ({}) => {
+    return(<PackageUpdate Id={useParams<Params>().id}/>)
+}
+
+export default WrapperPackageUpdate;
+
+class PackageUpdate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
-
         this.state = {
             error: null,
             isLoaded: false,
             packageDetailsDto: null
         };
+        
+        
     }
 
     componentDidMount() {
@@ -28,36 +44,44 @@ export default class PackageUpdate extends Component<Props, State> {
     }
 
     retrieveDetails() {
-        let getPackageDetailsQuery: IGetPackageDetailsQuery = {
-            id: "AF97CC05-000A-4301-B862-9B67F4E56042"
-        }
-
-        DeliveryDataService.get(getPackageDetailsQuery.id)
-            .then((response: any) => {
-                this.setState({
-                    isLoaded: true,
-                    packageDetailsDto: response.data
-                });
-                console.log(response.data);
-            })
-            .catch((e: Error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: e
-                });
-                console.log(e);
+        if (this.props.Id!=undefined) {
+            DeliveryDataService.get(this.props.Id)
+                .then((response: any) => {
+                    this.setState({
+                        isLoaded: true,
+                        packageDetailsDto: response.data
+                    });
+                    console.log(response.data);
+                })
+                .catch((e: Error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error: e
+                    });
+                    console.log(e);
+                });    
+        }else {
+            this.setState({
+                isLoaded: true,
+                error: new Error("id - undefined")
             });
+        }
+        
     }
 
     render() {
         const {error, isLoaded, packageDetailsDto} = this.state;
+        
+        
         if (error) {
+            
             return <div>Ошибка: {error.message}</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
             return (
                 <div className="list row">
+                    
                     <div className="col-md-8">
                         <div className="input-group mb-3">
                             <input

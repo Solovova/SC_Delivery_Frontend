@@ -8,7 +8,7 @@ class PackageDataService {
     }
 
     get(id: string) {
-        return http.get<IPackageDetailsDto>(`/tutorials/${id}`);
+        return http.get<IPackageDetailsDto>(`/package/${id}`);
     }
     //
     // create(data: ITutorialData) {
