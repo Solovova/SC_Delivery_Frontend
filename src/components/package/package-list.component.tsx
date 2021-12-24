@@ -10,22 +10,15 @@ type State = {
     error: Error | null,
     isLoaded: boolean,
     packages: IPackageListVm,
-    mode: DetailMode,
     currentPackage: IPackageListRecordDto | null,
     currentIndex: number,
 };
-
-enum DetailMode {
-    view,
-    edit
-}
 
 const PackageList = (props: Props) => {
     const [state, setState] = useState<State>({
         error: null,
         isLoaded: false,
         packages: {packages: []},
-        mode: DetailMode.view,
         currentPackage: null,
         currentIndex: -1
     })
@@ -114,7 +107,7 @@ const PackageList = (props: Props) => {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <PackageDetails id={state.currentPackage?.id} callback={Callback}/>
+                        <PackageDetails packageListRecordDto={state.currentPackage}/>
                     </div>
                 </div>
             </div>

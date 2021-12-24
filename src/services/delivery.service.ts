@@ -8,10 +8,8 @@ class PackageDataServiceClass {
         return http.get<IPackageListVm>("/package");
     }
 
-    get(id: string, cancelTokenSource: CancelTokenSource) {
-        return http.get<IPackageDetailsDto>(`/package/${id}`, {
-            cancelToken:cancelTokenSource.token
-        });
+    get(id: string) {
+        return http.get<IPackageDetailsDto>(`/package/${id}`);
     }
 
     //
