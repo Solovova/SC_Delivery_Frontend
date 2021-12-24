@@ -1,10 +1,11 @@
 ﻿import React, {Component} from "react";
 import {Link} from "react-router-dom";
+
 type Props = {};
 
 type State = {};
 
-export default class NavbarComponent extends Component<Props, State>{
+export default class NavbarComponent extends Component<Props, State> {
 
     render() {
         return (
