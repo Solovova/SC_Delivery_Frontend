@@ -1,5 +1,5 @@
 ﻿import {useState, useEffect} from "react";
-import DeliveryDataService from "../../services/delivery.service";
+import {PackageDataService} from "../../services/delivery.service";
 import {IPackageListVm, IPackageListRecordDto} from '../../types/delivery.type';
 import PackageDetails from "./package-details.component";
 import "./package.css"
@@ -10,21 +10,28 @@ type State = {
     error: Error | null,
     isLoaded: boolean,
     packages: IPackageListVm,
+    mode: DetailMode,
     currentPackage: IPackageListRecordDto | null,
     currentIndex: number,
 };
 
-export default function PackageList(props: Props) {
+enum DetailMode {
+    view,
+    edit
+}
+
+const PackageList = (props: Props) => {
     const [state, setState] = useState<State>({
         error: null,
         isLoaded: false,
         packages: {packages: []},
+        mode: DetailMode.view,
         currentPackage: null,
         currentIndex: -1
     })
 
     function retrievePackages() {
-        DeliveryDataService.getAll()
+        PackageDataService.getAll()
             .then((response: any) => {
                 setState({
                     ...state,
@@ -68,6 +75,8 @@ export default function PackageList(props: Props) {
         retrievePackages();
     }, []);
 
+
+    
     function blockList() {
         return (
             <ul className="list-group list-group-scroll">
@@ -105,7 +114,7 @@ export default function PackageList(props: Props) {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <PackageDetails currentPackage={state.currentPackage} callback={Callback}/>
+                        <PackageDetails id={state.currentPackage?.id} callback={Callback}/>
                     </div>
                 </div>
             </div>
@@ -113,3 +122,5 @@ export default function PackageList(props: Props) {
     }
 }
 
+
+export default PackageList;

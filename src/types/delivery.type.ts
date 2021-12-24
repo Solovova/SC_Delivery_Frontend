@@ -1,5 +1,5 @@
 ﻿export interface IPackageListRecordDto {
-    id?: any | null,
+    id: string,
     title: string
 }
 
@@ -8,7 +8,7 @@ export interface IPackageListVm {
 }
 
 export interface IPackageDetailsDto {
-    id?: any | null,
+    id: string,
     title: string,
     details: string
 }

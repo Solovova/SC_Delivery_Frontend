@@ -1,15 +1,19 @@
 ﻿import http from "../http-common";
 import {IPackageListVm} from '../types/delivery.type';
 import {IPackageDetailsDto} from '../types/delivery.type';
+import {CancelTokenSource} from "axios";
 
-class PackageDataService {
+class PackageDataServiceClass {
     getAll() {
         return http.get<IPackageListVm>("/package");
     }
 
-    get(id: string) {
-        return http.get<IPackageDetailsDto>(`/package/${id}`);
+    get(id: string, cancelTokenSource: CancelTokenSource) {
+        return http.get<IPackageDetailsDto>(`/package/${id}`, {
+            cancelToken:cancelTokenSource.token
+        });
     }
+
     //
     // create(data: ITutorialData) {
     //     return http.post<ITutorialData>("/tutorials", data);
@@ -32,4 +36,4 @@ class PackageDataService {
     // }
 }
 
-export default new PackageDataService();
+export const PackageDataService = new PackageDataServiceClass();

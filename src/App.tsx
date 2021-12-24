@@ -5,7 +5,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import PackageAdd from "./components/package-add.component";
 import PackageList from "./components/package/package-list.component";
 
-import PackageUpdate from "./components/package-update.component";
 import {Routes, Route, Link} from "react-router-dom";
 
 import NavbarComponent from "./components/navbar/navbar.component"
@@ -20,7 +19,7 @@ function App() {
                 <Routes>
                     <Route path="/packages" element={<PackageList/>}/>
                     <Route path="/add" element={<PackageAdd/>}/>
-                    <Route path="/update/:id" element={<PackageUpdate/>}/>
+                    {/*<Route path="/update/:id" element={<PackageUpdate/>}/>*/}
                 </Routes>
             </div>
         </div>
