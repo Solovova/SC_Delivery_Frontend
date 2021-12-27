@@ -31,7 +31,8 @@ const PackageUpdate = (props: Props) => {
         
         PackageDataService.update(updatePackageDto)
             .then((response: any) => {
-                navigate("/packages/" + state.data.id)
+                localStorage.setItem('activeId', state.data.id);
+                navigate("/packages/")
                 console.log(response.data);
             })
             .catch((e: Error) => {
@@ -55,7 +56,8 @@ const PackageUpdate = (props: Props) => {
     }
 
     function Cancel() {
-
+        localStorage.setItem('activeId', state.data.id);
+        navigate("/packages/")
     }
     
 
@@ -138,8 +140,7 @@ const PackageUpdate = (props: Props) => {
                     </button>
                     <button
                         className="badge btn-sm btn-warning mt-3 m-1"
-                        onClick={() => {
-                        }}
+                        onClick={() => {Cancel()}}
                     >
                         Cancel
                     </button>

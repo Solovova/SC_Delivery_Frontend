@@ -1,9 +1,10 @@
-﻿import {useState, useEffect} from "react";
+﻿import {useState, useEffect, FC} from "react";
 import {PackageDataService} from "../../services/delivery.service";
 import {IPackageListVm, IPackageListRecordDto} from '../../types/delivery.type';
 import PackageDetails from "./package-details.component";
 import "./package.css"
 import {useParams} from "react-router";
+import {useNavigate} from "react-router-dom";
 
 type Props = {};
 
@@ -13,24 +14,26 @@ type State = {
     packages: IPackageListVm,
     currentPackage: IPackageListRecordDto | null,
     currentIndex: number,
+    activeId: string | null
 };
+
+type StateIn = {
+    activeId? : string
+}
 
 type Params = {
     id: string
 }
 
-const PackageList = (props: Props) => {
+const PackageList:FC<Props> = (props: Props) => {
     const [state, setState] = useState<State>({
         error: null,
         isLoaded: false,
         packages: {packages: []},
         currentPackage: null,
-        currentIndex: -1
+        currentIndex: -1,
+        activeId: localStorage.getItem('activeId')
     })
-
-    const params = useParams<Params>();
-
-    
 
     function retrievePackages() {
         PackageDataService.getAll()
@@ -52,15 +55,6 @@ const PackageList = (props: Props) => {
             });
     }
 
-    function refreshList() {
-        retrievePackages();
-        setState({
-            ...state,
-            currentPackage: null,
-            currentIndex: -1
-        });
-    }
-
     function setActivePackage(active_package: IPackageListRecordDto, index: number) {
         setState({
             ...state,
@@ -70,25 +64,16 @@ const PackageList = (props: Props) => {
     }
 
     function setActivePackageById() {
-        
-        if (params.id==undefined) {
+        if (state.activeId==undefined) {
             return
         }
         
         const position = state.packages.packages.findIndex((quoteEl) => {
-            return quoteEl.id == params.id;
+            return quoteEl.id == state.activeId;
         });
         
-        console.log(`position ${position}`)
-        console.log(`id ${params.id}`)
-        console.log(`len ${state.packages.packages.length}`)
-        
         if (position!=-1){
-            setState({
-                ...state,
-                currentPackage: state.packages.packages[position],
-                currentIndex: position
-            });
+            setActivePackage(state.packages.packages[position],position)
         }
     }
 

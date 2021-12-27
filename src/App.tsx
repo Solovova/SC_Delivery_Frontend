@@ -19,7 +19,6 @@ function App() {
             </div>
             <div className="row mt-3">
                 <Routes>
-                    <Route path="/packages/:id" element={<PackageList/>}/>
                     <Route path="/packages" element={<PackageList/>}/>
                     <Route path="/add" element={<PackageAdd/>}/>
                     <Route path="/update/:id" element={<PackageUpdateLoader/>}/>
