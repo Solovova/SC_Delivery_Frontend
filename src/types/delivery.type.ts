@@ -17,7 +17,7 @@ export type IGetPackageDetailsQuery = {
     id: string
 }
 
-export interface UpdatePackageDto {
+export interface IUpdatePackageDto {
     id: string
     title: string,
     details: string

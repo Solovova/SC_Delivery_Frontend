@@ -1,4 +1,4 @@
-﻿import {IPackageDetailsDto, UpdatePackageDto} from "../../types/delivery.type";
+﻿import {IPackageDetailsDto, IUpdatePackageDto} from "../../types/delivery.type";
 import {ChangeEvent, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import {PackageDataService} from "../../services/delivery.service";
@@ -23,7 +23,7 @@ const PackageUpdate = (props: Props) => {
     const navigate = useNavigate();
     
     function UpdateDTO() {
-        let updatePackageDto:UpdatePackageDto =  {
+        let updatePackageDto:IUpdatePackageDto =  {
             id: state.data.id,
             title : state.data.title,
             details : state.data.details
@@ -31,7 +31,7 @@ const PackageUpdate = (props: Props) => {
         
         PackageDataService.update(updatePackageDto)
             .then((response: any) => {
-                navigate("/packages")
+                navigate("/packages/" + state.data.id)
                 console.log(response.data);
             })
             .catch((e: Error) => {
@@ -52,7 +52,6 @@ const PackageUpdate = (props: Props) => {
             };
         });
         UpdateDTO();
-        //navigate("/packages");
     }
 
     function Cancel() {

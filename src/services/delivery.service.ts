@@ -1,5 +1,5 @@
 ﻿import http from "../http-common";
-import {IPackageListVm, UpdatePackageDto} from '../types/delivery.type';
+import {IPackageListVm, IUpdatePackageDto} from '../types/delivery.type';
 import {IPackageDetailsDto} from '../types/delivery.type';
 import {CancelTokenSource} from "axios";
 
@@ -17,7 +17,7 @@ class PackageDataServiceClass {
     //     return http.post<ITutorialData>("/tutorials", data);
     // }
     //
-    update(data: UpdatePackageDto) {
+    update(data: IUpdatePackageDto) {
         return http.put<any>(`/package`, data);
     }
     //

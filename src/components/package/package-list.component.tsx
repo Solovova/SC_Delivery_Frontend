@@ -3,6 +3,7 @@ import {PackageDataService} from "../../services/delivery.service";
 import {IPackageListVm, IPackageListRecordDto} from '../../types/delivery.type';
 import PackageDetails from "./package-details.component";
 import "./package.css"
+import {useParams} from "react-router";
 
 type Props = {};
 
@@ -14,6 +15,10 @@ type State = {
     currentIndex: number,
 };
 
+type Params = {
+    id: string
+}
+
 const PackageList = (props: Props) => {
     const [state, setState] = useState<State>({
         error: null,
@@ -22,6 +27,10 @@ const PackageList = (props: Props) => {
         currentPackage: null,
         currentIndex: -1
     })
+
+    const params = useParams<Params>();
+
+    
 
     function retrievePackages() {
         PackageDataService.getAll()
@@ -60,6 +69,29 @@ const PackageList = (props: Props) => {
         });
     }
 
+    function setActivePackageById() {
+        
+        if (params.id==undefined) {
+            return
+        }
+        
+        const position = state.packages.packages.findIndex((quoteEl) => {
+            return quoteEl.id == params.id;
+        });
+        
+        console.log(`position ${position}`)
+        console.log(`id ${params.id}`)
+        console.log(`len ${state.packages.packages.length}`)
+        
+        if (position!=-1){
+            setState({
+                ...state,
+                currentPackage: state.packages.packages[position],
+                currentIndex: position
+            });
+        }
+    }
+
     function Callback(i: number) {
         setActivePackage(state.packages.packages[i], i);
     }
@@ -67,6 +99,10 @@ const PackageList = (props: Props) => {
     useEffect(() => {
         retrievePackages();
     }, []);
+
+    useEffect(() => {
+        setActivePackageById();
+    }, [state.packages]);
 
 
     
