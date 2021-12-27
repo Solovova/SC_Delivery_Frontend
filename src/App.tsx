@@ -6,10 +6,10 @@ import PackageAdd from "./components/package-add.component";
 import PackageList from "./components/package/package-list.component";
 
 
-import {Routes, Route, Link} from "react-router-dom";
+import {Routes, Route} from "react-router-dom";
 
 import NavbarComponent from "./components/navbar/navbar.component"
-import PackageUpdate from "./components/package/package-update.component";
+import PackageUpdateLoader from "./components/package/package-update-loader.component";
 
 function App() {
     return (
@@ -21,7 +21,7 @@ function App() {
                 <Routes>
                     <Route path="/packages" element={<PackageList/>}/>
                     <Route path="/add" element={<PackageAdd/>}/>
-                    <Route path="/update/:id" element={<PackageUpdate/>}/>
+                    <Route path="/update/:id" element={<PackageUpdateLoader/>}/>
                 </Routes>
             </div>
         </div>

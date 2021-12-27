@@ -23,7 +23,7 @@ const PackageDetails = (props: Props) => {
                     to={"/update/" + packageListRecordDto.id}
                 >
                     <button
-                        className="m-3 btn btn-sm btn-primary"
+                        className="badge btn-sm btn-warning mt-3 m-1"
                     >
                         Edit
                     </button>
