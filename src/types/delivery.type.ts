@@ -13,6 +13,11 @@ export interface IPackageDetailsDto {
     details: string
 }
 
+export interface IPackageAddDto {
+    title: string,
+    details: string
+}
+
 export type IGetPackageDetailsQuery = {
     id: string
 }

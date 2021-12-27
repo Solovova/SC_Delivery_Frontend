@@ -1,37 +1,39 @@
-﻿import {IPackageDetailsDto, IUpdatePackageDto} from "../../types/delivery.type";
+﻿import {IPackageAddDto, IPackageDetailsDto, IUpdatePackageDto} from "../../types/delivery.type";
 import {ChangeEvent, useRef, useState} from "react";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {PackageDataService} from "../../services/delivery.service";
 
-type Props = { data: IPackageDetailsDto };
+type Props = {  };
 
 
 type State = {
-    data: IPackageDetailsDto,
-    isUpdating: boolean,
+    data: IPackageAddDto,
+    isAdding: boolean,
     error: Error | null
 }
 
-const PackageUpdate = (props: Props) => {
+const PackageAdd = (props: Props) => {
 
     const [state, setState] = useState<State>({
-        data:props.data,
-        isUpdating: false,
+        data: {
+            title: "",
+            details: ""
+        },
+        isAdding: false,
         error: null
     })
-    
+
     const navigate = useNavigate();
-    
-    function UpdateDTO() {
-        let updatePackageDto:IUpdatePackageDto =  {
-            id: state.data.id,
-            title : state.data.title,
-            details : state.data.details
+
+    function AddDTO() {
+        let packageAddDto: IPackageAddDto = {
+            title: state.data.title,
+            details: state.data.details
         }
-        
-        PackageDataService.update(updatePackageDto)
+
+        PackageDataService.create(packageAddDto)
             .then((response: any) => {
-                localStorage.setItem('activeId', state.data.id);
+                localStorage.setItem('activeId', response.data);
                 navigate("/packages/")
                 console.log(response.data);
             })
@@ -43,23 +45,23 @@ const PackageUpdate = (props: Props) => {
                 console.log(e);
             });
     }
-    
-    function Update() {
+
+    function Add() {
         setState(function (prevState) {
             return {
                 ...prevState,
-                isUpdating:true,
-                error:null
+                isAdding: true,
+                error: null
             };
         });
-        UpdateDTO();
+        AddDTO();
     }
 
     function Cancel() {
-        localStorage.setItem('activeId', state.data.id);
+        localStorage.setItem('activeId', "");
         navigate("/packages/")
     }
-    
+
 
     function onChangeTitle(e: ChangeEvent<HTMLInputElement>) {
         const title = e.target.value;
@@ -87,7 +89,7 @@ const PackageUpdate = (props: Props) => {
         });
     }
 
-    function blockPackageFormEdit(packageDetailsDto: IPackageDetailsDto) {
+    function blockPackageFormEdit(packageDetailsDto: IPackageAddDto) {
         return (
             <form>
                 <div className="form-group">
@@ -114,7 +116,7 @@ const PackageUpdate = (props: Props) => {
         )
     }
 
-    function blockPackageDetailView(packageDetailsDto: IPackageDetailsDto) {
+    function blockPackageDetailView(packageDetailsDto: IPackageAddDto) {
         return (
             <div>
                 <div className="edit-form">
@@ -124,21 +126,17 @@ const PackageUpdate = (props: Props) => {
                     <button
                         type="submit"
                         className="badge btn-sm btn-success mt-3 m-1 "
-                        onClick={() => {Update() 
-                        }}
-                    >
-                        Update
-                    </button>
-                    <button
-                        className="badge btn-sm btn-danger mt-3 m-1"
                         onClick={() => {
+                            Add()
                         }}
                     >
-                        Delete
+                        Submit
                     </button>
                     <button
                         className="badge btn-sm btn-warning mt-3 m-1"
-                        onClick={() => {Cancel()}}
+                        onClick={() => {
+                            Cancel()
+                        }}
                     >
                         Cancel
                     </button>
@@ -149,16 +147,15 @@ const PackageUpdate = (props: Props) => {
 
     if (state.error) {
         return <div>Ошибка: {state.error.message}</div>;
-    } else if (state.isUpdating) {
-        return <div>Update...</div>;
+    } else if (state.isAdding) {
+        return <div>Adding...</div>;
     }
-    
+
     return (
         <div>
-            
             {blockPackageDetailView(state.data)}
         </div>
     )
 }
 
-export default PackageUpdate;
+export default PackageAdd;

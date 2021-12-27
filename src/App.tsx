@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import PackageAdd from "./components/package-add.component";
+import PackageAdd from "./components/package/package-add.component";
 import PackageList from "./components/package/package-list.component";
 
 

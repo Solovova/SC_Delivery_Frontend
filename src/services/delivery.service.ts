@@ -1,5 +1,5 @@
 ﻿import http from "../http-common";
-import {IPackageListVm, IUpdatePackageDto} from '../types/delivery.type';
+import {IPackageAddDto, IPackageListVm, IUpdatePackageDto} from '../types/delivery.type';
 import {IPackageDetailsDto} from '../types/delivery.type';
 import {CancelTokenSource} from "axios";
 
@@ -12,11 +12,11 @@ class PackageDataServiceClass {
         return http.get<IPackageDetailsDto>(`/package/${id}`);
     }
 
-    //
-    // create(data: ITutorialData) {
-    //     return http.post<ITutorialData>("/tutorials", data);
-    // }
-    //
+
+    create(data: IPackageAddDto) {
+        return http.post<string>("/package", data);
+    }
+
     update(data: IUpdatePackageDto) {
         return http.put<any>(`/package`, data);
     }
