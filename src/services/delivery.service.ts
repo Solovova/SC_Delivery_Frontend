@@ -24,7 +24,7 @@ class PackageDataServiceClass {
     delete(id: any) {
         return http.delete<any>(`/package/${id}`);
     }
-    //
+
     // deleteAll() {
     //     return http.delete<any>(`/tutorials`);
     // }
