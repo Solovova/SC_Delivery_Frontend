@@ -9,6 +9,7 @@ type Props = { data: IPackageDetailsDto };
 type State = {
     data: IPackageDetailsDto,
     isUpdating: boolean,
+    isDeleting: boolean,
     error: Error | null
 }
 
@@ -17,6 +18,7 @@ const PackageUpdate = (props: Props) => {
     const [state, setState] = useState<State>({
         data:props.data,
         isUpdating: false,
+        isDeleting: false,
         error: null
     })
     
@@ -43,6 +45,22 @@ const PackageUpdate = (props: Props) => {
                 console.log(e);
             });
     }
+
+    function DeleteDTO() {
+        PackageDataService.delete(state.data.id)
+            .then((response: any) => {
+                localStorage.setItem('activeId', "");
+                navigate("/packages/")
+                console.log(response.data);
+            })
+            .catch((e: Error) => {
+                setState({
+                    ...state,
+                    error: e
+                });
+                console.log(e);
+            });
+    }
     
     function Update() {
         setState(function (prevState) {
@@ -53,6 +71,17 @@ const PackageUpdate = (props: Props) => {
             };
         });
         UpdateDTO();
+    }
+
+    function Delete() {
+        setState(function (prevState) {
+            return {
+                ...prevState,
+                isDeleting:true,
+                error:null
+            };
+        });
+        DeleteDTO();
     }
 
     function Cancel() {
@@ -124,15 +153,13 @@ const PackageUpdate = (props: Props) => {
                     <button
                         type="submit"
                         className="badge btn-sm btn-success mt-3 m-1 "
-                        onClick={() => {Update() 
-                        }}
+                        onClick={() => {Update()}}
                     >
                         Update
                     </button>
                     <button
                         className="badge btn-sm btn-danger mt-3 m-1"
-                        onClick={() => {
-                        }}
+                        onClick={() => {Delete()}}
                     >
                         Delete
                     </button>
@@ -151,6 +178,8 @@ const PackageUpdate = (props: Props) => {
         return <div>Ошибка: {state.error.message}</div>;
     } else if (state.isUpdating) {
         return <div>Update...</div>;
+    } else if (state.isDeleting) {
+        return <div>Deleting...</div>;
     }
     
     return (

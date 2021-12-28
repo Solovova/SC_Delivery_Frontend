@@ -20,10 +20,10 @@ class PackageDataServiceClass {
     update(data: IUpdatePackageDto) {
         return http.put<any>(`/package`, data);
     }
-    //
-    // delete(id: any) {
-    //     return http.delete<any>(`/tutorials/${id}`);
-    // }
+
+    delete(id: any) {
+        return http.delete<any>(`/package/${id}`);
+    }
     //
     // deleteAll() {
     //     return http.delete<any>(`/tutorials`);
