@@ -13,7 +13,7 @@ type State = {
 };
 
 type Params = {
-    id: string
+    id: string 
 }
 
 const PackageUpdateLoader = (props: Props) => {
